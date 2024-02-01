@@ -339,6 +339,7 @@ const SpendBillGatesMoney = () => {
       >
         {items.map((item) => (
           <div key={item.id} className="item" data-price={item.price}>
+            <img src={item.image} alt={item.name} />
             <h3>{item.name}</h3>
             <p>Price: ${item.price.toLocaleString()}</p>
             <button onClick={() => spendMoney(item.price)}>Buy</button>
