@@ -1,5 +1,36 @@
-.item {
-  border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  justify-content: space-between;
+  align-items: center;
+  height: 320px;
+  width: 280px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.card img {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+#money {
+  font-size: 40px;
+  font-weight: bold;
+  background: linear-gradient(to right, #23c387, #2ac978, #23c387);
+}
+
+button {
+  background: linear-gradient(to right, #23c387, #2ac978, #23c387);
+}
+
+.receipt {
+  text-align: center;
+}
+
+.receipt ul {
+  list-style: none;
+  padding: 0;
 }

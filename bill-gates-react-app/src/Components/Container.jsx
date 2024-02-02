@@ -1,14 +1,43 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const SpendBillGatesMoney = () => {
   const [money, setMoney] = useState(100000000000);
 
   const spendMoney = (price) => {
     if (money >= price) {
-      setMoney(money - price);
-    } else {
-      alert("You don't have enough money!");
+      setMoney((prev) => prev - price);
     }
+  };
+
+  const sellProduct = (price) => {
+    setMoney((prev) => prev + price);
+  };
+
+  const handleSell = (e) => {
+    const index = e.target.id;
+    const currentQuantity = itemsSet[index].quantity;
+
+    sellProduct(itemsSet[index].price, index);
+    setItemsSet((prev) => {
+      const newItems = [...prev];
+      newItems[index].quantity = currentQuantity - 1;
+      return newItems;
+    });
+  };
+
+  const handleBuy = (e) => {
+    const index = e.target.id;
+    const currentQuantity = itemsSet[index].quantity;
+
+    if (currentQuantity >= 0) {
+      spendMoney(itemsSet[index].price, index);
+    }
+
+    setItemsSet((prev) => {
+      const newItems = [...prev];
+      newItems[index].quantity = currentQuantity + 1;
+      return newItems;
+    });
   };
 
   const items = [
@@ -329,22 +358,93 @@ const SpendBillGatesMoney = () => {
     },
   ];
 
+  const [itemsSet, setItemsSet] = useState(items);
+
   return (
-    <div>
-      <h1>Spend Bill Gates' Money</h1>
-      <div id="money">${money.toLocaleString()}</div>
+    <div className="d-flex flex-column align-items-center main">
+      <div className="bg-light col-7 mt-5 mb-3 d-flex flex-column align-items-center p-3">
+        <img
+          className="rounded-circle"
+          src="https://neal.fun/spend/billgates.jpg"
+          alt=""
+          width={120}
+          height={120}
+        />
+        <h1>Spend Bill Gates' Money</h1>
+      </div>
+
       <div
-        id="items"
-        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+        className=" p-3 col-7 text-light d-flex align-items-center justify-content-center mb-3 sticky-top "
+        id="money"
       >
-        {items.map((item) => (
-          <div key={item.id} className="item" data-price={item.price}>
-            <img src={item.image} alt={item.name} />
-            <h3>{item.name}</h3>
-            <p>Price: ${item.price.toLocaleString()}</p>
-            <button onClick={() => spendMoney(item.price)}>Buy</button>
+        ${money.toLocaleString()}
+      </div>
+      <div className=" col-7 ">
+        <div className=" col-12 ">
+          <div className="row justify-content-center ">
+            {itemsSet.map((item, index) => (
+              <div key={item.id} className="col-md-4 mb-4">
+                <div className="card ">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    width={200}
+                    height={100}
+                  />
+                  <div className="card-body">
+                    <h3 className="card-title">{item.name}</h3>
+                    <p className="card-text">
+                      Price: ${item.price.toLocaleString()}
+                    </p>
+                    <div className="d-flex justify-content-between">
+                      <button
+                        className="btn"
+                        id={index}
+                        onClick={handleSell}
+                        disabled={item.quantity === 0}
+                      >
+                        Sell
+                      </button>
+                      <span className="mx-2 border p-2 rounded col-4">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        className="btn "
+                        onClick={handleBuy}
+                        id={index}
+                        disabled={item.price > money}
+                      >
+                        Buy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+      </div>
+      <div className="col-7 mt-2 mb-3 p-3 bg-light receipt">
+        <h2>Your Receipt</h2>
+        <ul>
+          {itemsSet.map(
+            (item) =>
+              item.quantity > 0 && (
+                <li key={item.id}>
+                  {item.name} x {item.quantity} - $
+                  {(item.price * item.quantity).toLocaleString()}
+                </li>
+              )
+          )}
+        </ul>
+        <hr />
+        <h3>
+          Total: $
+          {itemsSet
+            .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            .toLocaleString()}
+        </h3>
       </div>
     </div>
   );
